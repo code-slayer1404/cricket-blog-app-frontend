@@ -1,32 +1,45 @@
 import { useEffect, useState } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from "reactstrap";
+import { saveTokenAndUser } from "../auth/loginHelper";
+import { login } from "../services/UserServices";
+import PropTypes from "prop-types";
 
-export default function Login() {
+export default function Login({ updateLoginStatus }) {
     const initialState = {
-        email:"",
-        password:""
+        email: "",
+        password: ""
     }
 
-    const [formData,setFormData] = useState(initialState);
-    
+    const [formData, setFormData] = useState(initialState);
+
 
     // a common funtion to update all fields
-    function handleChange(event){
-        setFormData((prev)=>{
+    function handleChange(event) {
+        setFormData((prev) => {
             return {
                 ...prev,
-                [event.target.name] : event.target.value
+                [event.target.name]: event.target.value
             }
         });
     }
 
-    function handleSubmit(event){
+    function handleSubmit(event) {
         event.preventDefault(); // to prevent refresh
         // submit logic here
+        login({ ...formData, username: formData.email })
+            .then(response => {
+                console.log(response);
+                saveTokenAndUser(response.data, () => {
+                    setFormData(initialState);
+                    updateLoginStatus()
+                });
+            })
+            .catch(e => { console.error(e) })
+
     }
 
     // just for me to see 
-    useEffect(() => { console.log(formData);}, [formData]);
+    useEffect(() => { console.log(formData); }, [formData]);
 
     return (
         <>
@@ -55,7 +68,7 @@ export default function Login() {
                                 <CardFooter>
                                     <div className="text-center">
                                         <Button className="me-2">Login</Button>
-                                        <Button type="reset" onClick={()=>{setFormData(initialState)}}>Reset</Button>
+                                        <Button type="reset" onClick={() => { setFormData(initialState) }}>Reset</Button>
                                     </div>
                                 </CardFooter>
                             </Card>
@@ -65,4 +78,9 @@ export default function Login() {
             </Container>
         </>
     )
+}
+
+
+Login.propTypes = {
+    updateLoginStatus: PropTypes.func
 }
