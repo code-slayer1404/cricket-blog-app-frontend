@@ -2,14 +2,15 @@ import PropTypes from 'prop-types'
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText } from 'reactstrap'
 import { getUserDetails, isLogged } from '../auth/loginHelper'
 import { deletePost } from '../services/PostService';
-export default function Post({ post,updatePostContainer }) {
+export default function Post({ post,loadPosts }) {
+
     
     const mystyle = {
     }
 
     function onDelete(event){
         event.preventDefault();
-        deletePost(post.id).then(r=>{console.log(r.data); updatePostContainer(); });
+        deletePost(post.id).then(r=>{console.log(r.data); loadPosts(); });
     }
 
 
@@ -24,7 +25,7 @@ export default function Post({ post,updatePostContainer }) {
                 </CardBody>
                 <CardFooter>
                     <div className='text-center'>
-                        {isLogged() && post.user.id == getUserDetails().id ? <Button color='secondary' className='me-3'>Update</Button>:""}
+                        {isLogged() && post.user.id == getUserDetails().id ? <Button color='secondary' onClick={(event)=>{event.preventDefault(); }} className='me-3'>Update</Button>:""}
                         {isLogged() && post.user.id == getUserDetails().id ? <Button color='danger' onClick={onDelete}>Delete</Button>:""}
                     </div>
                 </CardFooter>
@@ -42,5 +43,5 @@ Post.propTypes = {
             id : PropTypes.number
         })
     }),
-    updatePostContainer: PropTypes.func
+    loadPosts: PropTypes.func
 }

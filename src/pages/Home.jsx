@@ -3,29 +3,27 @@ import { getAllPosts } from "../services/PostService";
 import Post from "../components/Post";
 import { Col, Container, Row } from "reactstrap";
 
-export default function Home(){
+export default function Home() {
 
-    const [posts,setPosts] = useState([]);
+    const [posts, setPosts] = useState([]);
 
-    const [postsUpdated, setPostsUpdated] = useState(0);
-
-    function updatePostContainer() {
-        setPostsUpdated(postsUpdated + 1);
-    }
-
-    useEffect(()=>{
-        getAllPosts().then(r=>{
+    function loadPosts() {
+        getAllPosts().then(r => {
             setPosts(r.data.map(post => {
-                return <Post key={post.id} post={post} updatePostContainer={updatePostContainer}></Post>
+                return <Post key={post.id} post={post} loadPosts={loadPosts}></Post>
             }))
         })
+    }
+
+    useEffect(() => {
+        loadPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[postsUpdated])
-    return(
+    }, [])
+    return (
         <>
             <Container style={{ marginTop: "80px" }}>
                 <Row>
-                    <Col md={{size:8,offset:2}}>
+                    <Col md={{ size: 8, offset: 2 }}>
                         <div className="my-5">
                             {posts}
                         </div>
