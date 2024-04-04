@@ -12,16 +12,27 @@ export default function DashBoard() {
     });
 
     const [posts, setPosts] = useState([]);
+
     const [postsUpdated, setPostsUpdated] = useState(0);
 
-    
+    function updatePostContainer() {
+        setPostsUpdated(postsUpdated + 1);
+    }
 
-    useEffect(() => {
+    function loadPosts() {
         getUserPosts().then(r => {
             console.log(r.data);
-            setPosts(r.data.map((e) => { return <Post key={e.id} title={e.title} content={e.content}></Post> }))
+            setPosts(r.data.map((e) => { return <Post key={e.id} post={e} updatePostContainer={updatePostContainer}></Post> }))
             console.log(posts);
         });
+    }
+
+
+
+
+    useEffect(() => {
+        // try to make a load posts function and pass it to update delete functions
+        loadPosts();
     }, [postsUpdated])
 
 
@@ -43,18 +54,18 @@ export default function DashBoard() {
         addPost(postData).then(response => {
             console.log(response);
             console.log(response.data);
-            setPostData({title:"",content:""});
+            setPostData({ title: "", content: "" });
             setPostsUpdated((prev) => prev + 1);
         });
 
-        
+
 
     }
     return (
         <>
-            <Container>
+            <Container style={{ marginTop: "80px" }}>
                 <Row>
-                    <Col md={{ size: 8, offset: 2 }}>
+                    <Col md={{ size: 8, offset: 2 }} className="mt-5">
                         <Form onSubmit={handleSubmit}>
                             <Card>
                                 <CardHeader>

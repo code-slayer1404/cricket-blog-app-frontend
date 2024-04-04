@@ -66,7 +66,7 @@ export default function Signup() {
 
     return (
         <>
-            <Container>
+            <Container style={{ marginTop: "150px" }}>
                 <Row>
                     <Col md={{ size: 6, offset: 3 }}>
                         <Form onSubmit={handleSubmit} onChange={() => { setMessage({type:"",content:""}) }}>

@@ -20,3 +20,16 @@ export function getUserPosts() {
         }
     }).then(response => response)
 }
+
+export function getAllPosts() {
+    return myAxios.get(`/api/posts`).then(response => response)
+}
+
+export function deletePost(id) {
+    return myAxios.delete(`/api/posts/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem("data")).token
+                }`
+        }
+    }).then(response => response)
+}

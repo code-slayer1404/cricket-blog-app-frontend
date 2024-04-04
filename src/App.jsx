@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { isLogged } from './auth/loginHelper'
 import PrivatePage from './pages/UserPages/PrivatePage'
 import DashBoard from './pages/UserPages/DashBoard'
+import Home from './pages/Home'
 
 // import Button from 'react-bootstrap/Button';
 // or less ideally
@@ -25,16 +26,18 @@ function App() {
             <BrowserRouter>
 
                 <Base loginStatus={loginStatus} updateLoginStatus={updateLoginStatus}>
-                    <Routes>
-                        <Route path='/' element=""></Route>
-                        <Route path='/login' element={<Login updateLoginStatus={updateLoginStatus}></Login>}></Route>
-                        <Route path='/signup' element={<Signup></Signup>}></Route>
 
-                        <Route path="/user" element={<PrivatePage loginStatus={loginStatus}></PrivatePage>}>
-                            <Route path='dashboard' element={<DashBoard></DashBoard>}></Route>
-                        </Route>
-                    </Routes>
                 </Base>
+                <Routes>
+                    <Route path='/' element={<Home></Home>}></Route>
+                    <Route path='/login' element={<Login updateLoginStatus={updateLoginStatus}></Login>}></Route>
+                    <Route path='/signup' element={<Signup></Signup>}></Route>
+
+                    <Route path="/user" element={<PrivatePage loginStatus={loginStatus}></PrivatePage>}>
+                        <Route path='dashboard' element={<DashBoard></DashBoard>}></Route>
+                    </Route>
+                </Routes>
+                
             </BrowserRouter>
 
 

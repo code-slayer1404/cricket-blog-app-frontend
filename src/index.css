@@ -1,14 +1,14 @@
-*{
+/* *{
   margin: 0;
   padding: 0;
-  box-sizing: content-box;
-}
+  box-sizing: border-box;
+} */
 
 body {
   /* background-image: url(/Cricket-bat-ball.webp);
   background-size: 100% max(100%,100vh);
   background-repeat: no-repeat; */
-  background-color: antiquewhite !important;
+  background-color: #e3e2c4 !important;
 }
 
 
@@ -30,7 +30,8 @@ body {
 
   height: 56px;
   background-color: black;
-  color: white;
+  background-color: #b7b58f;
+  color: #333;
 
   padding: 10px;
 }
@@ -44,6 +45,3 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.content{
-  padding-top: 150px;
-}
