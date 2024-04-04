@@ -3,8 +3,12 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, I
 import { saveTokenAndUser } from "../auth/loginHelper";
 import { login } from "../services/UserServices";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 export default function Login({ updateLoginStatus }) {
+
+    const navigate = useNavigate();
+
     const initialState = {
         email: "",
         password: ""
@@ -31,7 +35,8 @@ export default function Login({ updateLoginStatus }) {
                 console.log(response);
                 saveTokenAndUser(response.data, () => {
                     setFormData(initialState);
-                    updateLoginStatus()
+                    updateLoginStatus();
+                    navigate("/user/dashboard");
                 });
             })
             .catch(e => { console.error(e) })
