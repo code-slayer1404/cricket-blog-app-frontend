@@ -5,9 +5,13 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 import { useState } from 'react'
 import { isLogged } from './auth/loginHelper'
+
 import PrivatePage from './pages/UserPages/PrivatePage'
 import DashBoard from './pages/UserPages/DashBoard'
+import UpdatePost from './pages/UserPages/UpdatePost'
+
 import Home from './pages/Home'
+import OpenPost from './pages/OpenPost'
 
 // import Button from 'react-bootstrap/Button';
 // or less ideally
@@ -35,6 +39,9 @@ function App() {
 
                     <Route path="/user" element={<PrivatePage loginStatus={loginStatus}></PrivatePage>}>
                         <Route path='dashboard' element={<DashBoard></DashBoard>}></Route>
+                        <Route path="update-post/:id" element={<UpdatePost></UpdatePost>} />
+                        <Route path='open-post/:id' element={<OpenPost />} />
+
                     </Route>
                 </Routes>
                 

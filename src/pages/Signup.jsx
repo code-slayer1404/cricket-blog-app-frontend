@@ -101,9 +101,7 @@ export default function Signup() {
                                     <div className="text-center">
                                         <Button className="me-2">Register</Button>
                                         <Button type="reset" onClick={() => { setFormData(initialState) }}>Reset</Button>
-                                        <br />
-                                        {/* for debugging only. Remove it later */}
-                                        {JSON.stringify(formData)}
+
                                         <br />
                                         {joke}
                                     </div>

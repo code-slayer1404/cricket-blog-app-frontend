@@ -1,14 +1,30 @@
-import { useState } from "react";
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from "reactstrap";
-import { addPost } from "../../services/PostService";
-import PropTypes from "prop-types"
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from 'reactstrap';
+import { getPost, updatePost } from '../../services/PostService';
 
-export default function AddPost({loadPosts}){
 
-    const [postData, setPostData] = useState({
+export default function UpdatePost() {
+    const { id } = useParams();
+    const initialFormState = {
         title: "",
         content: ""
-    });
+    }
+    const navigate = useNavigate();
+    const [postData, setPostData] = useState(initialFormState);
+
+    useEffect(() => {
+        // Fetch the post with the given ID and update postData
+        getPost(id).then(
+            r => {
+                console.log(r);
+                setPostData({
+                    title: r.data.title,
+                    content: r.data.content,
+                })
+            }
+        );
+    }, [id]);
 
     function handleChange(event) {
         setPostData(
@@ -24,11 +40,10 @@ export default function AddPost({loadPosts}){
     function handleSubmit(event) {
         event.preventDefault();
 
-        addPost(postData).then(response => {
+        updatePost(id, postData).then(response => {
             console.log(response);
             console.log(response.data);
-            setPostData({ title: "", content: "" });
-            loadPosts();
+            navigate(`/user/dashboard`);
         });
     }
 
@@ -40,7 +55,7 @@ export default function AddPost({loadPosts}){
                         <Form onSubmit={handleSubmit}>
                             <Card>
                                 <CardHeader>
-                                    Add Post
+                                    Update Post
                                 </CardHeader>
                                 <CardBody>
 
@@ -58,8 +73,8 @@ export default function AddPost({loadPosts}){
                                 </CardBody>
                                 <CardFooter>
                                     <div className="text-center">
-                                        <Button color="success" className="me-2">Post</Button>
-                                        <Button>Reset</Button>
+                                        <Button className="me-2">Update</Button>
+                                        <Button onClick={()=>{setPostData(initialFormState)}}>Reset</Button>
                                     </div>
                                 </CardFooter>
                             </Card>
@@ -72,6 +87,3 @@ export default function AddPost({loadPosts}){
     )
 }
 
-AddPost.propTypes ={
-    loadPosts : PropTypes.func
-}
