@@ -34,7 +34,7 @@ export default function AddPost({loadPosts}){
 
     return (
         <>
-            <Container style={{ marginTop: "80px" }}>
+            <Container>
                 <Row>
                     <Col md={{ size: 8, offset: 2 }} className="mt-5">
                         <Form onSubmit={handleSubmit}>

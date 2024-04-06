@@ -4,7 +4,9 @@ import PropTypes from "prop-types";
 export default function PrivatePage({loginStatus}){
     return(
         <>
-            {loginStatus && (<Outlet></Outlet>) }
+            <div style={{marginTop:"80px"}}>
+                {loginStatus && (<Outlet></Outlet>)}
+            </div>
         </>
     )
 }

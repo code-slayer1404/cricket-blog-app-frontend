@@ -36,13 +36,13 @@ function App() {
                     <Route path='/' element={<Home></Home>}></Route>
                     <Route path='/login' element={<Login updateLoginStatus={updateLoginStatus}></Login>}></Route>
                     <Route path='/signup' element={<Signup></Signup>}></Route>
+                    <Route path='/open-post/:id' element={<OpenPost />} />
 
                     <Route path="/user" element={<PrivatePage loginStatus={loginStatus}></PrivatePage>}>
                         <Route path='dashboard' element={<DashBoard></DashBoard>}></Route>
                         <Route path="update-post/:id" element={<UpdatePost></UpdatePost>} />
-                        <Route path='open-post/:id' element={<OpenPost />} />
-
                     </Route>
+                    
                 </Routes>
                 
             </BrowserRouter>

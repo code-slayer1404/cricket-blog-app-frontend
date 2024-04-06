@@ -32,8 +32,8 @@ export default function Post({ post,loadPosts }) {
                 </CardBody>
 
                 <CardFooter>
-                    <div className='text-center'>
-                        <Link to={`/user/open-post/${post.id}`}>
+                    <div className='d-flex'>
+                        <Link to={`/open-post/${post.id}`}>
                             <Button color='success' className='me-3'>Open</Button>
                         </Link>
                         {isLogged() && post.user.id == getUserDetails().id && (
@@ -44,9 +44,9 @@ export default function Post({ post,loadPosts }) {
                                 <Button color='danger' onClick={onDelete}>Delete</Button>
                             </>
                         )}
-                        
+                        <div className='ms-auto mt-2'>{post.user.name}</div>
+
                     </div>
-                    <div className='d-flex'><div className='ms-auto'>{post.user.name}</div></div>
                 </CardFooter>
             </Card>
         </>
