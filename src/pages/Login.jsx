@@ -16,6 +16,11 @@ export default function Login({ updateLoginStatus }) {
 
     const [formData, setFormData] = useState(initialState);
 
+    const [message, setMessage] = useState({
+        type: "",
+        content: ""
+    });
+
 
     // a common funtion to update all fields
     function handleChange(event) {
@@ -39,7 +44,15 @@ export default function Login({ updateLoginStatus }) {
                     navigate("/user/dashboard");
                 });
             })
-            .catch(e => { console.error(e) })
+            .catch(e => {
+                console.error(e);
+                setMessage(() => {
+                    return {
+                        type: "alert-danger",
+                        content: "login failed! try with a different email or password"
+                    }
+                });
+            })
 
     }
 
@@ -48,12 +61,13 @@ export default function Login({ updateLoginStatus }) {
 
     return (
         <>
-            <Container style={{marginTop:"150px"}}>
+            <Container style={{ marginTop: "150px" }}>
                 <Row>
                     <Col md={{ size: 6, offset: 3 }}>
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit} onChange={() => { setMessage({ type: "", content: "" }) }}>
                             <Card>
                                 <CardHeader>
+                                    <p className={`alert ${message.type}`}>{message.content}</p>
                                     Login here
                                 </CardHeader>
                                 <CardBody>

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText } from 'reactstrap'
 import { getUserDetails, isLogged } from '../auth/loginHelper'
-import { deletePost } from '../services/PostService';
+import { deletePost, myDateFormatter } from '../services/PostService';
 import { Link } from 'react-router-dom';
-export default function Post({ post,loadPosts }) {
+export default function Post({ post, loadPosts }) {
 
-    
+
     const mystyle = {
     }
 
@@ -24,7 +24,9 @@ export default function Post({ post,loadPosts }) {
     return (
         <>
             <Card className='mb-3' style={mystyle} >
-                <CardHeader><h2>{post.title}</h2></CardHeader>
+                <CardHeader>
+                    <h2 className='d-flex justify-content-between'><span>{post.title}</span><span>{myDateFormatter(post.date)}</span></h2>
+                </CardHeader>
                 <CardBody>
                     <CardText>
                         {post.content.length > 300 ? post.content.substring(0, 300) + "..." : post.content}
@@ -54,13 +56,14 @@ export default function Post({ post,loadPosts }) {
 }
 
 Post.propTypes = {
-    post : PropTypes.shape({
-        id : PropTypes.number,
-        title : PropTypes.string,
-        content : PropTypes.string,
-        user : PropTypes.shape({
-            id : PropTypes.number,
-            name : PropTypes.string
+    post: PropTypes.shape({
+        id: PropTypes.number,
+        title: PropTypes.string,
+        content: PropTypes.string,
+        date: PropTypes.string,
+        user: PropTypes.shape({
+            id: PropTypes.number,
+            name: PropTypes.string
         })
     }),
     loadPosts: PropTypes.func

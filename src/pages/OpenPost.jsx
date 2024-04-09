@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Card, CardHeader, CardBody, CardText, CardFooter } from 'reactstrap';
-import { getPost } from '../services/PostService';
+import { getPost, myDateFormatter } from '../services/PostService';
 
 function OpenPost() {
     const { id } = useParams();
     const [post, setPost] = useState({
         title: "",
         content: "",
-        user : {}
+        user : {},
+        date : ""
     });
 
     useEffect(() => {
@@ -19,7 +20,8 @@ function OpenPost() {
                 setPost({
                     title: r.data.title,
                     content: r.data.content,
-                    user : r.data.user
+                    user : r.data.user,
+                    date : myDateFormatter(r.data.date)
                 })
             }
         );
@@ -31,7 +33,7 @@ function OpenPost() {
                 <Col md={{ size: 8, offset: 2 }} className="mt-5">
                     <Card>
                         <CardHeader>
-                            <h2>{post.title}</h2>
+                            <h2 className='d-flex justify-content-between'><span>{post.title}</span><span>{post.date}</span></h2>
                         </CardHeader>
                         <CardBody>
                             <CardText>

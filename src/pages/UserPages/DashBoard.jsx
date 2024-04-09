@@ -11,10 +11,13 @@ export default function DashBoard() {
     const [posts, setPosts] = useState([]);
 
     function loadPosts() {
+
         getUserPosts().then(r => {
             console.log(r.data);
             setPosts(r.data.map((e) => { return <Post key={e.id} post={e} loadPosts={loadPosts}></Post> }))
             console.log(posts);
+        }).catch(e=>{
+            console.error("error loading posts",e);
         });
     }
 

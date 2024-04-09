@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, I
 import { addPost } from "../../services/PostService";
 import PropTypes from "prop-types"
 
-export default function AddPost({loadPosts}){
+export default function AddPost({ loadPosts }) {
 
     const [postData, setPostData] = useState({
         title: "",
@@ -21,16 +21,34 @@ export default function AddPost({loadPosts}){
         )
     }
 
-    function handleSubmit(event) {
-        event.preventDefault();
+    // function handleSubmit(event) {
+    //     event.preventDefault();
 
-        addPost(postData).then(response => {
+    //     addPost(postData).then(response => {
+    //         console.log(response);
+    //         console.log(response.data);
+    //         setPostData({ title: "", content: "" });
+    //         loadPosts();
+    //     });
+    // }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        try {
+            const response = await addPost(postData);
             console.log(response);
             console.log(response.data);
+
             setPostData({ title: "", content: "" });
-            loadPosts();
-        });
+            loadPosts(); // Reload posts after successful submission
+            
+        } catch (error) {
+            // Handle errors here, for example:
+            console.error("Failed to add post:", error);
+            // Update state to display error message to the user
+        }
     }
+
 
     return (
         <>
@@ -72,6 +90,6 @@ export default function AddPost({loadPosts}){
     )
 }
 
-AddPost.propTypes ={
-    loadPosts : PropTypes.func
+AddPost.propTypes = {
+    loadPosts: PropTypes.func
 }

@@ -1,48 +1,65 @@
 import { getUserDetails } from "../auth/loginHelper";
-import { myAxios } from "./helper";
+import { myAxios, myAxiosWithAuth } from "./helper";
 
 export function addPost(postData) {
-    return myAxios.post(`/api/users/${getUserDetails().id}/posts`, postData, {
-        headers: {
-            'Authorization': `Bearer ${
-                JSON.parse(localStorage.getItem("data")).token
-            }`
-        }
-}).then(response=>response)
+    return myAxiosWithAuth.post(`/api/users/${getUserDetails().id}/posts`, postData)
+        .then(response => response)
+        .catch(error => {
+            // Handle errors here
+
+            console.error("Error adding post:", error.response);
+            // Re-throw the error to be caught by the caller
+            throw error;
+        });
 }
-
-
 export function getUserPosts() {
-    return myAxios.get(`/api/users/${getUserDetails().id}/posts`,{
-        headers: {
-            'Authorization': `Bearer ${JSON.parse(localStorage.getItem("data")).token
-                }`
-        }
-    }).then(response => response)
+    return myAxiosWithAuth.get(`/api/users/${getUserDetails().id}/posts`)
+        .then(response => response)
+        .catch(error => {
+            console.error("api call to get user posts failed!", error);
+            throw error;
+        });
 }
 
 export function getAllPosts() {
-    return myAxios.get(`/api/posts`).then(response => response)
+    return myAxios.get(`/api/posts`)
+        .then(response => response)
+        .catch(e => {
+            console.error("api call to get all users failed!", e);
+            throw e;
+        })
 }
 export function getPost(id) {
-    return myAxios.get(`/api/posts/${id}`).then(response => response)
+    return myAxios.get(`/api/posts/${id}`)
+        .then(response => response)
+        .catch(e => {
+            console.error("api call to get post failed!", e);
+            throw e;
+        })
 }
 
 export function deletePost(id) {
-    return myAxios.delete(`/api/posts/${id}`, {
-        headers: {
-            'Authorization': `Bearer ${JSON.parse(localStorage.getItem("data")).token
-                }`
-        }
-    }).then(response => response)
+    return myAxiosWithAuth.delete(`/api/posts/${id}`)
+        .then(response => response)
+        .catch(e => {
+            console.error("api call to delete post failed!", e);
+            throw e;
+        })
+        ;
 }
 
 
-export function updatePost(id,postData) {
-    return myAxios.put(`/api/posts/${id}`, postData, {
-        headers: {
-            'Authorization': `Bearer ${JSON.parse(localStorage.getItem("data")).token
-                }`
-        }
-    }).then(response => response)
+export function updatePost(id, postData) {
+    return myAxiosWithAuth.put(`/api/posts/${id}`, postData)
+        .then(response => response)
+        .catch(e => {
+            console.error("api call to update post failed!", e);
+            throw e;
+        })
+}
+
+export function myDateFormatter(date_response) {
+    const date = new Date(date_response);
+    return date.toLocaleDateString();
+    //if date_response is null we get 1970 date
 }

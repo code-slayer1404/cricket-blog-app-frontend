@@ -8,11 +8,8 @@ export default function Header({ loginStatus, updateLoginStatus }) {
         color: "#333"
     }
 
-    
-
     function localLogOut(){
-        logout();
-        updateLoginStatus();
+        logout(updateLoginStatus);
     }
 
     function capitalizeFirstLetterOfEachWord(str) {

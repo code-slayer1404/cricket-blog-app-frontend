@@ -13,7 +13,7 @@ export default function Signup() {
     const [message, setMessage] = useState({
         type: "",
         content: ""
-    })
+    });
     const [joke, setJoke] = useState("")
 
     useEffect(() => {
