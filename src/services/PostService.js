@@ -12,8 +12,8 @@ export function addPost(postData) {
             throw error;
         });
 }
-export function getUserPosts() {
-    return myAxiosWithAuth.get(`/api/users/${getUserDetails().id}/posts`)
+export function getUserPosts(pageNumber=1) {
+    return myAxiosWithAuth.get(`/api/users/${getUserDetails().id}/posts?pageNumber=${pageNumber}`)
         .then(response => response)
         .catch(error => {
             console.error("api call to get user posts failed!", error);
@@ -21,8 +21,8 @@ export function getUserPosts() {
         });
 }
 
-export function getAllPosts() {
-    return myAxios.get(`/api/posts`)
+export function getAllPosts(pageNumber=1) {
+    return myAxios.get(`/api/posts?pageNumber=${pageNumber}`)
         .then(response => response)
         .catch(e => {
             console.error("api call to get all users failed!", e);
@@ -63,3 +63,7 @@ export function myDateFormatter(date_response) {
     return date.toLocaleDateString();
     //if date_response is null we get 1970 date
 }
+
+
+
+
