@@ -12,10 +12,24 @@ export default function Post({ post, loadPosts }) {
     function onDelete(event) {
         event.preventDefault();
         if (window.confirm('Are you sure you want to delete this post?')) {
-            deletePost(post.id).then(r => {
+            deletePost(getUserDetails().id,post.id).then(r => {
                 console.log(r.data);
                 loadPosts();
             });
+        }
+    }
+
+
+    function renderUpdateAndDeleteButtons() {
+        if (isLogged() && post.user.id == getUserDetails().id) {
+            return (
+                <>
+                    <Link to={`/user/update-post/${post.id}`}>
+                        <Button color='primary' className='me-3'>Update</Button>
+                    </Link>
+                    <Button color='danger' onClick={onDelete}>Delete</Button>
+                </>
+            )
         }
     }
 
@@ -25,7 +39,7 @@ export default function Post({ post, loadPosts }) {
         <>
             <Card className='mb-3' style={mystyle} >
                 <CardHeader>
-                    <h2 className='d-flex justify-content-between'><span>{post.title}</span><span>{myDateFormatter(post.date)}</span></h2>
+                    <h2 className='d-flex justify-content-between  align-items-center m-0'><span>{post.title}</span><span className='h5 m-0'>{myDateFormatter(post.date)}</span></h2>
                 </CardHeader>
                 <CardBody>
                     <CardText>
@@ -38,14 +52,7 @@ export default function Post({ post, loadPosts }) {
                         <Link to={`/open-post/${post.id}`}>
                             <Button color='success' className='me-3'>Open</Button>
                         </Link>
-                        {isLogged() && post.user.id == getUserDetails().id && (
-                            <>
-                                <Link to={`/user/update-post/${post.id}`}>
-                                    <Button color='primary' className='me-3'>Update</Button>
-                                </Link>
-                                <Button color='danger' onClick={onDelete}>Delete</Button>
-                            </>
-                        )}
+                        {renderUpdateAndDeleteButtons()}
                         <div className='ms-auto mt-2'>{post.user.name}</div>
 
                     </div>

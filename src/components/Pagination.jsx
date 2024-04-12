@@ -12,17 +12,21 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         );
     }
 
+    if(totalPages<1){
+        return null;
+    }
+
     return (
-        <nav aria-label="Page navigation example">
-            <ul className="pagination">
+        <nav aria-label="Page navigation">
+            <ul className="pagination justify-content-center">
                 <li className="page-item">
-                    <a className="page-link" onClick={() => { currentPage > 1 && onPageChange(currentPage - 1)} } >
+                    <a className="page-link" onClick={() => { currentPage > 1 && onPageChange(currentPage - 1) }} >
                         Previous
                     </a>
                 </li>
                 {pageNumbers}
                 <li className="page-item">
-                    <a className="page-link" onClick={() => { currentPage < totalPages && onPageChange(currentPage + 1)}}>
+                    <a className="page-link" onClick={() => { currentPage < totalPages && onPageChange(currentPage + 1) }}>
                         Next
                     </a>
                 </li>

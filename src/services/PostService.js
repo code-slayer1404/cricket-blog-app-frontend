@@ -38,8 +38,8 @@ export function getPost(id) {
         })
 }
 
-export function deletePost(id) {
-    return myAxiosWithAuth.delete(`/api/posts/${id}`)
+export function deletePost(user_id,post_id) {
+    return myAxiosWithAuth.delete(`/api/users/${user_id}/posts/${post_id}`)
         .then(response => response)
         .catch(e => {
             console.error("api call to delete post failed!", e);
@@ -49,8 +49,8 @@ export function deletePost(id) {
 }
 
 
-export function updatePost(id, postData) {
-    return myAxiosWithAuth.put(`/api/posts/${id}`, postData)
+export function updatePost(user_id,post_id, postData) {
+    return myAxiosWithAuth.put(`/api/users/${user_id}/posts/${post_id}`, postData)
         .then(response => response)
         .catch(e => {
             console.error("api call to update post failed!", e);
@@ -60,7 +60,7 @@ export function updatePost(id, postData) {
 
 export function myDateFormatter(date_response) {
     const date = new Date(date_response);
-    return date.toLocaleDateString();
+    return date.toLocaleString("en-GB");
     //if date_response is null we get 1970 date
 }
 

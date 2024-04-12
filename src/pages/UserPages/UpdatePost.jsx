@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from 'reactstrap';
 import { getPost, updatePost } from '../../services/PostService';
+import { getUserDetails } from '../../auth/loginHelper';
 
 
 export default function UpdatePost() {
@@ -40,7 +41,7 @@ export default function UpdatePost() {
     function handleSubmit(event) {
         event.preventDefault();
 
-        updatePost(id, postData).then(response => {
+        updatePost(getUserDetails().id,id, postData).then(response => {
             console.log(response);
             console.log(response.data);
             navigate(`/user/dashboard`);
@@ -73,8 +74,9 @@ export default function UpdatePost() {
                                 </CardBody>
                                 <CardFooter>
                                     <div className="text-center">
-                                        <Button className="me-2">Update</Button>
-                                        <Button onClick={()=>{setPostData(initialFormState)}}>Reset</Button>
+                                        <Button color='primary' className="me-2">Update</Button>
+                                        <Button color='danger' className='me-2' onClick={()=>{setPostData(initialFormState)}}>Reset</Button>
+                                        <Button color='secondary' onClick={() => navigate(-1)}>Go Back</Button>
                                     </div>
                                 </CardFooter>
                             </Card>

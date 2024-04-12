@@ -13,7 +13,7 @@ export default function Home() {
 
     function loadPosts(num=1) {
         getAllPosts(num).then(r => {
-            setPosts(r.data.posts.map(post => {
+            setPosts(r.data.content.map(post => {
                 return <Post key={post.id} post={post} loadPosts={loadPosts}></Post>
             }));
             setCurrentPage(r.data.currentPage);

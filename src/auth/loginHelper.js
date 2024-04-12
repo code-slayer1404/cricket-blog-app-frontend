@@ -15,9 +15,29 @@ export function saveTokenAndUser(loginData, next) {
  *
  * @returns {boolean} Returns true if the user is logged in, false otherwise.
  */
-export function isLogged(){
-    return localStorage.getItem("data") != null;
+// export function isLogged(){
+//     return localStorage.getItem("data") != null;
+// }
+
+export function isLogged() {
+    const token = localStorage.getItem("data");
+    if (token) {
+        // decode it to check the expiry
+        const jwt = JSON.parse(atob(token.split('.')[1]));
+
+        // Check if token is expired
+        if (Date.now() >= jwt.exp * 1000) {
+            console.error("Token expired");
+            localStorage.removeItem("data");
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return false;
+    }
 }
+
 
 /**
  * Retrieves the user details from local storage data.

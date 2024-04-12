@@ -18,7 +18,7 @@ export default function DashBoard() {
 
         getUserPosts(num).then(r => {
             console.log(r.data);
-            setPosts(r.data.posts.map((e) => { return <Post key={e.id} post={e} loadPosts={loadPosts}></Post> }));
+            setPosts(r.data.content.map((e) => { return <Post key={e.id} post={e} loadPosts={loadPosts}></Post> }));
             console.log(posts);
             setCurrentPage(r.data.currentPage);
             setTotalPages(r.data.totalPages);
