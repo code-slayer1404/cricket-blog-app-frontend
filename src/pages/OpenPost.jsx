@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Card, CardHeader, CardBody, CardText, CardFooter } from 'reactstrap';
 import { getPost, myDateFormatter } from '../services/PostService';
 import CommentBox from '../components/CommentBox';
+import Post from '../components/Post';
 
 function OpenPost() {
     const { id } = useParams();

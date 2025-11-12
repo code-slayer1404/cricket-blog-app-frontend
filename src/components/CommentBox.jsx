@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { addComment, getCommentsByPost } from '../services/CommentService';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import Comment from './Comment';
+import { isLogged } from '../auth/loginHelper';
 
 const CommentBox = ({ postId }) => {
 
@@ -51,13 +52,15 @@ const CommentBox = ({ postId }) => {
                 <Comment key={comment.id} comment={comment} loadComments={loadComments} />
             ))}
 
-            <Form onSubmit={handleCommentSubmit}>
-                <FormGroup>
-                    <Label for="newComment">Add a comment:</Label>
-                    <Input type="textarea" name="comment" id="newComment" value={newComment} onChange={handleCommentChange} />
-                </FormGroup>
-                <Button color='success' type="submit">Submit</Button>
-            </Form>
+            {isLogged() && (
+                <Form onSubmit={handleCommentSubmit}>
+                    <FormGroup>
+                        <Label for="newComment">Add a comment:</Label>
+                        <Input type="textarea" name="comment" id="newComment" value={newComment} onChange={handleCommentChange} required />
+                    </FormGroup>
+                    <Button color='success' type="submit">Submit</Button>
+                </Form>
+            )}
         </div>
     );
 };

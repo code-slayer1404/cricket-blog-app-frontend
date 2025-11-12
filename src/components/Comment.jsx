@@ -2,6 +2,7 @@ import { useState } from "react";
 import PropTypes from 'prop-types';
 import { deleteComment, updateComment } from "../services/CommentService";
 import { Button, Card, CardBody, CardFooter, Input } from "reactstrap";
+import { getUserDetails, isLogged } from "../auth/loginHelper";
 
 export default function Comment({ comment, loadComments }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -40,6 +41,17 @@ export default function Comment({ comment, loadComments }) {
 
     }
 
+    function renderUpdateAndDeleteButtons() {
+        if (isLogged() && comment.user.id == getUserDetails().id) {
+            return (
+                <CardFooter className="text-center">
+                    <Button color="primary" className="me-3" onClick={() => setIsEditing(true)}>Edit</Button>
+                    <Button color="danger" onClick={() => handleDelete(comment.id)}>Delete</Button>
+                </CardFooter>
+            )
+        }
+    }
+
 
     const myStyle = { marginRight: "10px" };
 
@@ -68,10 +80,10 @@ export default function Comment({ comment, loadComments }) {
                         </div>
                         <p>{comment.content}</p>
                     </CardBody>
-                    <CardFooter className="text-center">
-                        <Button color="primary" onClick={() => setIsEditing(true)} style={myStyle}>Edit</Button>
-                        <Button color="danger" onClick={() => handleDelete(comment.id)}>Delete</Button>
-                    </CardFooter>
+                    {
+                        renderUpdateAndDeleteButtons()
+                    }
+
                 </div>
             )}
         </Card>
@@ -83,7 +95,8 @@ Comment.propTypes = {
     comment: PropTypes.shape({
         id: PropTypes.number,
         user: PropTypes.shape({
-            name: PropTypes.string
+            name: PropTypes.string,
+            id: PropTypes.number
         }),
         post: PropTypes.shape({
             id: PropTypes.number
