@@ -27,7 +27,7 @@ function App() {
     return (
         <>
 
-            <BrowserRouter>
+            <BrowserRouter basename='/cricket-blog-app-frontend'>
 
                 <Base loginStatus={loginStatus} updateLoginStatus={updateLoginStatus}>
 
