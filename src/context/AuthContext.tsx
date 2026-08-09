@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState } from "react";
-import { getUserDetails, isLogged, saveTokenAndUser, removeTokenAndUser } from "@/auth/loginHelper";
+import { getUserDetails, isLogged, saveTokenAndUser, removeTokenAndUser } from "@/lib/loginHelper";
 import { JwtAuthResponse } from "@/types/dto/AuthDTO";
 import { UserReadDTO } from "@/types/dto/UserDTO";
 
@@ -14,9 +14,9 @@ export const AuthContext = createContext<AuthContextType|null>(null)
 
 export default function AuthProvider({children}:{children:ReactNode}){
 
-    const [loginStatus,setLoginStatus] = useState(isLogged())
+    const [loginStatus, setLoginStatus] = useState(isLogged())
     const [loggedUser, setLoggedUser] = useState<UserReadDTO | null>(
-        isLogged() ? getUserDetails() : null
+        loginStatus ? getUserDetails() : null
     );
 
     function logout(){

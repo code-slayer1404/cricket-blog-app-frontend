@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../../hooks/auth";
+import { useAuth } from "@/hooks/auth";
 
 export default function PrivatePage(){
     const {loginStatus} = useAuth();

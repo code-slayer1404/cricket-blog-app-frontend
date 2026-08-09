@@ -1,54 +1,50 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import PropTypes from 'prop-types';
-import { deleteComment, updateComment } from "../services/CommentService";
+import { deleteComment, updateComment } from "@/services/CommentService";
 import { Button, Card, CardBody, CardFooter, Input } from "reactstrap";
-import { useAuth } from "../hooks/auth";
-import { CommentReadDTO } from "../types/dto/CommentDTO";
-interface CommentProps{
-    comment : CommentReadDTO;
-    loadComments : (arg:number)=>void;
+import { useAuth } from "@/hooks/auth";
+import { CommentReadDTO } from "@/types/dto/CommentDTO";
+
+interface CommentProps {
+    comment: CommentReadDTO;
+    loadComments: (arg: number) => void;
 }
 
-export default function Comment({ comment, loadComments } : CommentProps) {
-    const {loginStatus, loggedUser} = useAuth()
+export default function Comment({ comment, loadComments }: CommentProps) {
+    const { loginStatus, loggedUser } = useAuth()
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.content);
 
-    const handleEditChange = (e : ChangeEvent<HTMLInputElement>) => {
+    const handleEditChange = (e: ChangeEvent<HTMLInputElement>) => {
         setEditedComment(e.target.value);
     }
 
-    const handleEditSubmit = (e : FormEvent) => {
+    const handleEditSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        updateComment(comment.post.id, comment.id, { content: editedComment })
-            .then((data) => {
-                console.log(data);
-                setIsEditing(false);
-                loadComments(comment.post.id);
-            })
-            .catch((error) => {
-                console.error("Error updating comment:", error);
-            });
+        const result = await updateComment(comment.post.id, comment.id, { content: editedComment });
+
+        if (result.ok) {
+            console.log(result.data);
+            setIsEditing(false);
+            loadComments(comment.post.id);
+        } else {
+            console.error("Error updating comment:", result.error);
+        }
     }
 
-
-
-    function handleDelete(commentId:number) {
+    async function handleDelete(commentId: number) {
         console.log(commentId);
-        deleteComment(comment.post.id, commentId)
-            .then((data) => {
-                console.log(data);
-                // add something to reload comment box  
-                loadComments(comment.post.id);
-            })
-            .catch((error) => {
-                console.error("Error deleting comment:", error);
-            });
-
+        const result = await deleteComment(comment.post.id, commentId);
+        
+        if (result.ok) {
+            console.log(result.data);
+            loadComments(comment.post.id);
+        } else {
+            console.error("Error deleting comment:", result.error);
+        }
     }
 
     function renderUpdateAndDeleteButtons() {
-        if(!loggedUser){
+        if (!loggedUser) {
             throw new Error("cannot update comment! no user logged in!")
         }
         if (loginStatus && comment.user.id == loggedUser.id) {

@@ -15,24 +15,35 @@ export default function DashBoard() {
     const [totalPages, setTotalPages] = useState(1);
 
 
-    function loadPosts(num?:number) {
+    async function loadPosts(num?: number) {
 
-        getUserPosts(num).then(data => {
-            console.log(data);
+        // getUserPosts(num).then(data => {
+        //     console.log(data);
+        //     setPosts(data.content);
+        //     console.log(posts);
+        //     setCurrentPage(data.currentPage);
+        //     setTotalPages(data.totalPages);
+        // }).catch(e=>{
+        //     console.error("error loading posts",e);
+        // });
+
+        const result = await getUserPosts(num)
+        if (result.ok) {
+            const data = result.data
+            // console.log(data);
             setPosts(data.content);
-            console.log(posts);
             setCurrentPage(data.currentPage);
             setTotalPages(data.totalPages);
-        }).catch(e=>{
-            console.error("error loading posts",e);
-        });
+        } else {
+            console.error("error loading posts", result.error);
+        }
     }
 
     useEffect(() => {
         loadPosts(currentPage);
     }, []);
 
-    function onPageChange(num:number) {
+    function onPageChange(num: number) {
         loadPosts(num);
     }
 

@@ -9,6 +9,5 @@ export default defineConfig({
     alias : {
       '@' : path.resolve(__dirname,"./src")
     }
-  },
-  base: '/cricket-blog-app-frontend/', // 👈 must match your repo name
+  }
 })

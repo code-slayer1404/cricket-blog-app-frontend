@@ -11,17 +11,21 @@ export default function Home() {
     const [totalPages, setTotalPages] = useState(1);
 
 
-    function loadPosts(num=1) {
-        getAllPosts(num).then(data => {
+    async function loadPosts(num=1) {
+
+        const result = await getAllPosts(num);
+        if(result.ok){
+            const data = result.data
             setPosts(data.content);
             setCurrentPage(data.currentPage);
             setTotalPages(data.totalPages);
-        })
+        }else{
+            console.log(result.error);
+        }
     }
 
     useEffect(() => {
         loadPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 

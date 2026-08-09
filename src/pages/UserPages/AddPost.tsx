@@ -28,17 +28,15 @@ export default function AddPost({ loadPosts }:AddPostsProps) {
 
     async function handleSubmit(event:React.FormEvent) {
         event.preventDefault();
-        try {
-            const response = await addPost(postData);
-            console.log(response.status,response.statusText);
+        const result = await addPost(postData);
+
+        if(result.ok) {
             
             setPostData({ title: "", content: "" });
             loadPosts(); // Reload posts after successful submission
             
-        } catch (error) {
-            // Handle errors here, for example:
-            console.error("Failed to add post:", error);
-            // Update state to display error message to the user
+        } else {
+            console.error("Failed to add post:", result.error);
         }
     }
 

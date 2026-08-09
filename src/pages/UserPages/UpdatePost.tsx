@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from 'reactstrap';
 import { getPost, updatePost } from '@/services/PostService';
-import { useAuth } from '../../hooks/auth';
+import { useAuth } from '@/hooks/auth';
 
 
 export default function UpdatePost() {
@@ -11,21 +11,27 @@ export default function UpdatePost() {
         title: "",
         content: ""
     }
-    const {loggedUser} = useAuth();
+    const { loggedUser } = useAuth();
     const navigate = useNavigate();
     const [postData, setPostData] = useState(initialFormState);
 
     useEffect(() => {
         // Fetch the post with the given ID and update postData
-        getPost(Number(id)).then(
-            data => {
+        async function wrapper() {
+            const result = await getPost(Number(id));
+            if (result.ok) {
+                const data = result.data;
                 console.log(data);
                 setPostData({
                     title: data.title,
                     content: data.content,
                 })
+            } else {
+                console.log(result.error);
             }
-        );
+        }
+        wrapper();
+
     }, [id]);
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -39,16 +45,19 @@ export default function UpdatePost() {
         )
     }
 
-    function handleSubmit(event: React.FormEvent) {
+    async function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
-        if(!loggedUser){
+        if (!loggedUser) {
             throw new Error("could not update! Not logged in!")
         }
-        updatePost(loggedUser.id,Number(id), postData).then(response => {
-            console.log(response);
-            console.log(response.data);
+        const result = await updatePost(loggedUser.id, Number(id), postData);
+        if (result.ok) {
+            console.log(result.data);
             navigate(`/user/dashboard`);
-        });
+        }else{
+            console.log(result.error);
+            
+        }
     }
 
     return (
@@ -78,7 +87,7 @@ export default function UpdatePost() {
                                 <CardFooter>
                                     <div className="text-center">
                                         <Button color='primary' className="me-2">Update</Button>
-                                        <Button color='danger' className='me-2' onClick={()=>{setPostData(initialFormState)}}>Reset</Button>
+                                        <Button color='danger' className='me-2' onClick={() => { setPostData(initialFormState) }}>Reset</Button>
                                         <Button color='secondary' onClick={() => navigate(-1)}>Go Back</Button>
                                     </div>
                                 </CardFooter>

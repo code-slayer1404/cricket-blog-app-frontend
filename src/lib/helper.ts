@@ -10,12 +10,6 @@ export const myAxios = axios.create({
 })
 
 
-// const getHeaders = () => {
-//     const data =  localStorage.getItem("token")
-//     if (data != null)
-//         return JSON.parse(data).token;
-//     else return null;
-// }
 const getHeaders = () => {
     return localStorage.getItem("token")
 }

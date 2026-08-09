@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Card, CardHeader, CardBody, CardText, CardFooter } from 'reactstrap';
-import { getPost, myDateFormatter } from '../services/PostService';
+import { getPost, myDateFormatter } from '@/services/PostService';
 import CommentBox from '@/components/CommentBox';
 import { PostReadDTO } from '@/types/dto/PostDTO';
 
@@ -15,20 +15,22 @@ function OpenPost() {
     // });
     const [post, setPost] = useState<PostReadDTO | null>(null);
 
-    function loadPost(postId: number) {
+    async function loadPost(postId: number) {
         // Fetch the post with the given ID and update post state
-        getPost(postId).then(
-            data => {
-                console.log(data);
-                setPost({
-                    id: data.id,
-                    title: data.title,
-                    content: data.content,
-                    user: data.user,
-                    date: myDateFormatter(data.date)
-                })
-            }
-        );
+        const result = await getPost(postId);
+        if(result.ok){
+            const data = result.data;
+            console.log(data);
+            setPost({
+                id: data.id,
+                title: data.title,
+                content: data.content,
+                user: data.user,
+                date: myDateFormatter(data.date)
+            })
+        }else{
+            console.log(result.error);
+        }
     }
 
     useEffect(() => {

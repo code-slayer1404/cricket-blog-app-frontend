@@ -2,30 +2,35 @@ import { Button, Card, CardBody, CardFooter, CardHeader, CardText } from 'reacts
 import { deletePost, myDateFormatter } from '@/services/PostService';
 import { Link } from 'react-router-dom';
 import { PostReadDTO } from '@/types/dto/PostDTO';
-import { useAuth } from '../hooks/auth';
+import { useAuth } from '@/hooks/auth';
 
 
-interface PostProps{
-    post : PostReadDTO;
-    loadPosts : (num?:number) => void
+interface PostProps {
+    post: PostReadDTO;
+    loadPosts: (num?: number) => void
 }
 
-export default function Post({ post, loadPosts } : PostProps) {
+export default function Post({ post, loadPosts }: PostProps) {
 
     const mystyle = {
     }
-    const {loggedUser,loginStatus} = useAuth()
+    const { loggedUser, loginStatus } = useAuth()
 
-    function onDelete(event : React.MouseEvent<HTMLButtonElement>) {
+    async function onDelete(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault();
         if (window.confirm('Are you sure you want to delete this post?')) {
-            if(!loggedUser){
+            if (!loggedUser) {
                 throw new Error("could not delete. no user logged in")
             }
-            deletePost(loggedUser.id,post.id).then(r => {
-                console.log(r.data);
+
+            const result = await deletePost(loggedUser.id, post.id);
+            if (result.ok) {
+                const data = result.data;
+                console.log(data);
                 loadPosts();
-            });
+            }else{
+                console.log(result.error); 
+            }
         }
     }
 

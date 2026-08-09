@@ -2,24 +2,24 @@ import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { addComment, getCommentsByPost } from '@/services/CommentService';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import Comment from '@/components/Comment';
-import { useAuth } from '../hooks/auth';
-import { CommentReadDTO } from '../types/dto/CommentDTO';
+import { useAuth } from '@/hooks/auth';
+import { CommentReadDTO } from '@/types/dto/CommentDTO';
 
-export default function CommentBox({ postId }:{postId:number}){
+export default function CommentBox({ postId }: { postId: number }) {
 
-    const {loginStatus} = useAuth();
+    const { loginStatus } = useAuth();
     const [comments, setComments] = useState<CommentReadDTO[]>([]);
     const [newComment, setNewComment] = useState<string>('');
 
 
-    function loadComments(arg:number) {
-        getCommentsByPost(arg, 1)
-            .then(data => {
-                setComments(data.content);
-            })
-            .catch(error => {
-                console.error('Error fetching comments:', error);
-            });
+    async function loadComments(arg: number) {
+        const result = await getCommentsByPost(arg, 1);
+        if (result.ok) {
+            const data = result.data;
+            setComments(data.content)
+        } else {
+            console.log(result.error);
+        }
     }
 
     useEffect(() => {
@@ -28,21 +28,21 @@ export default function CommentBox({ postId }:{postId:number}){
     }, []);
 
 
-    const handleCommentChange = (e : ChangeEvent<HTMLInputElement>) => {
+    const handleCommentChange = (e: ChangeEvent<HTMLInputElement>) => {
         setNewComment(e.target.value);
     }
 
-    const handleCommentSubmit = (e : FormEvent) => {
+    const handleCommentSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        const result = await addComment(Number(postId), { content: newComment });
 
-        addComment(Number(postId), { content: newComment })
-            .then(data => {
-                setComments([...comments, data]);
-                setNewComment('');
-                // loadPosts(postId);
-            }).catch(error => {
-                console.error('Error adding comment:', error);
-            });
+        if (result.ok) {
+            const data = result.data;
+            setComments([...comments, data])
+            setNewComment('');
+        } else {
+            console.error('Error adding comment:', result.error);
+        }
     }
 
 
@@ -64,4 +64,4 @@ export default function CommentBox({ postId }:{postId:number}){
             )}
         </div>
     );
-};
+}

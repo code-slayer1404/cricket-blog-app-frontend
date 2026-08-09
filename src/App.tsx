@@ -3,13 +3,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Signup from '@/pages/Signup'
 import Login from '@/pages/Login'
 
-import Base from '@/components/Base'
 import PrivatePage from '@/pages/UserPages/PrivatePage'
 import DashBoard from '@/pages/UserPages/DashBoard'
 import UpdatePost from '@/pages/UserPages/UpdatePost'
 
 import Home from '@/pages/Home'
 import OpenPost from '@/pages/OpenPost'
+import Header from '@/components/Header'
 
 // import Button from 'react-bootstrap/Button';
 // or less ideally
@@ -18,9 +18,9 @@ function App() {
 
     return (
         <>
-            <BrowserRouter basename='/cricket-blog-app-frontend'>
+            <BrowserRouter>
 
-                <Base></Base>
+                <Header/>
                 <Routes>
                     <Route path='/' element={<Home></Home>}></Route>
                     <Route path='/login' element={<Login/>}></Route>

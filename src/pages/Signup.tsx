@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from "reactstrap";
-import { signup } from "../services/UserServices";
+import { signup } from "@/services/UserServices";
 
 export default function Signup() {
     const initialState = {

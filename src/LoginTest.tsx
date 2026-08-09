@@ -1,7 +1,8 @@
+import { FormEvent } from "react";
 import { Button, Card, CardBody, CardHeader, Form, Input, Label } from "reactstrap";
 
 export default function LoginTest() {
-    function name(event) {
+    function name(event:FormEvent) {
         event.preventDefault();
         window.location.href = "https://www.google.com"
     }
