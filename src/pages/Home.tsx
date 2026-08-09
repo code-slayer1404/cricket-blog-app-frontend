@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import { getAllPosts } from "@/services/PostService";
 import Post from "@/components/Post";
 import { Col, Container, Row } from "reactstrap";
@@ -11,28 +11,31 @@ export default function Home() {
     const [totalPages, setTotalPages] = useState(1);
 
 
-    async function loadPosts(num=1) {
-
+    async function loadPosts (num:number) {
         const result = await getAllPosts(num);
-        if(result.ok){
+        if (result.ok) {
             const data = result.data
             setPosts(data.content);
             setCurrentPage(data.currentPage);
             setTotalPages(data.totalPages);
-        }else{
+        } else {
             console.log(result.error);
         }
     }
 
     useEffect(() => {
-        loadPosts();
-    }, []);
+        loadPosts(currentPage);
+    }, [currentPage]);
 
 
-    function onPageChange(num:number) {
-        loadPosts(num);
+    function onPageChange(num: number) {
+        setCurrentPage(num);
     }
 
+    function refreshPosts(){
+        loadPosts(currentPage)
+        // loadPosts(1) if you want redirect to page 1
+    }
 
     return (
         <>
@@ -40,12 +43,12 @@ export default function Home() {
                 <Row>
                     <Col md={{ size: 8, offset: 2 }}>
                         <div className="my-5">
-                            {posts.map(post=><Post key={post.id} post={post} loadPosts={loadPosts}></Post>)}
+                            {posts.map(post => <Post key={post.id} post={post} refreshPosts={refreshPosts}></Post>)}
                         </div>
                         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange}></Pagination>
                     </Col>
                 </Row>
-                
+
             </Container>
         </>
     )

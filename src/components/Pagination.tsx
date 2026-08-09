@@ -1,11 +1,11 @@
-interface PaginationProps{
-    currentPage : number;
-    totalPages : number;
-    onPageChange : (num:number)=>void;
+interface PaginationProps {
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (num: number) => void;
 }
 
-function Pagination({ currentPage, totalPages, onPageChange }:PaginationProps) {
-    const pageNumbers : JSX.Element[] = [];
+function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+    const pageNumbers: JSX.Element[] = [];
 
     for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(
@@ -17,7 +17,7 @@ function Pagination({ currentPage, totalPages, onPageChange }:PaginationProps) {
         );
     }
 
-    if(totalPages<1){
+    if (totalPages < 1) {
         return null;
     }
 
@@ -25,13 +25,19 @@ function Pagination({ currentPage, totalPages, onPageChange }:PaginationProps) {
         <nav aria-label="Page navigation">
             <ul className="pagination justify-content-center">
                 <li className="page-item">
-                    <a className="page-link" onClick={() => { currentPage > 1 && onPageChange(currentPage - 1) }} >
+                    <a className="page-link" onClick={() => {                    
+                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                        currentPage > 1 && onPageChange(currentPage - 1)
+                    }} >
                         Previous
                     </a>
                 </li>
                 {pageNumbers}
                 <li className="page-item">
-                    <a className="page-link" onClick={() => { currentPage < totalPages && onPageChange(currentPage + 1) }}>
+                    <a className="page-link" onClick={() => {
+                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                        currentPage < totalPages && onPageChange(currentPage + 1)
+                    }}>
                         Next
                     </a>
                 </li>

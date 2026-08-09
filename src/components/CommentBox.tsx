@@ -12,8 +12,8 @@ export default function CommentBox({ postId }: { postId: number }) {
     const [newComment, setNewComment] = useState<string>('');
 
 
-    async function loadComments(arg: number) {
-        const result = await getCommentsByPost(arg, 1);
+    async function loadComments(postId: number) {
+        const result = await getCommentsByPost(postId, 1);
         if (result.ok) {
             const data = result.data;
             setComments(data.content)
@@ -24,8 +24,7 @@ export default function CommentBox({ postId }: { postId: number }) {
 
     useEffect(() => {
         loadComments(postId);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [postId]);
 
 
     const handleCommentChange = (e: ChangeEvent<HTMLInputElement>) => {

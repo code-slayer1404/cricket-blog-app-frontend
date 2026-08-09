@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { getUserPosts } from "@/services/PostService";
 import Post from "@/components/Post";
@@ -14,19 +13,7 @@ export default function DashBoard() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-
-    async function loadPosts(num?: number) {
-
-        // getUserPosts(num).then(data => {
-        //     console.log(data);
-        //     setPosts(data.content);
-        //     console.log(posts);
-        //     setCurrentPage(data.currentPage);
-        //     setTotalPages(data.totalPages);
-        // }).catch(e=>{
-        //     console.error("error loading posts",e);
-        // });
-
+    async function loadPosts (num : number) {
         const result = await getUserPosts(num)
         if (result.ok) {
             const data = result.data
@@ -41,22 +28,26 @@ export default function DashBoard() {
 
     useEffect(() => {
         loadPosts(currentPage);
-    }, []);
+    }, [currentPage]);
 
     function onPageChange(num: number) {
-        loadPosts(num);
+        setCurrentPage(num)
+    }
+
+    function refreshPosts(){
+        loadPosts(currentPage)
     }
 
     return (
         <>
-            <AddPost loadPosts={loadPosts}></AddPost>
+            <AddPost refreshPosts={refreshPosts}></AddPost>
 
             <Container>
                 <Row>
                     <Col md={{ size: 8, offset: 2 }} className="mt-5">
 
                         <div className="my-5">
-                            {posts.map((post) => { return <Post key={post.id} post={post} loadPosts={loadPosts}></Post> })}
+                            {posts.map((post) => { return <Post key={post.id} post={post} refreshPosts={refreshPosts}></Post> })}
                         </div>
                         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange}></Pagination>
                     </Col>

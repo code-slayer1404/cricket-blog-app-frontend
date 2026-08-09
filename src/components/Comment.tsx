@@ -6,7 +6,7 @@ import { CommentReadDTO } from "@/types/dto/CommentDTO";
 
 interface CommentProps {
     comment: CommentReadDTO;
-    loadComments: (arg: number) => void;
+    loadComments: (postId: number) => void;
 }
 
 export default function Comment({ comment, loadComments }: CommentProps) {
@@ -45,7 +45,7 @@ export default function Comment({ comment, loadComments }: CommentProps) {
 
     function renderUpdateAndDeleteButtons() {
         if (!loggedUser) {
-            throw new Error("cannot update comment! no user logged in!")
+            return
         }
         if (loginStatus && comment.user.id == loggedUser.id) {
             return (

@@ -4,10 +4,10 @@ import { addPost } from "@/services/PostService";
 import { PostWriteDTO } from "@/types/dto/PostDTO";
 
 interface AddPostsProps{
-    loadPosts : (num?:number) => void
+    refreshPosts : (num?:number) => void
 }
 
-export default function AddPost({ loadPosts }:AddPostsProps) {
+export default function AddPost({ refreshPosts }:AddPostsProps) {
 
     const [postData, setPostData] = useState<PostWriteDTO>({
         title: "",
@@ -33,7 +33,7 @@ export default function AddPost({ loadPosts }:AddPostsProps) {
         if(result.ok) {
             
             setPostData({ title: "", content: "" });
-            loadPosts(); // Reload posts after successful submission
+            refreshPosts(); // Reload posts after successful submission
             
         } else {
             console.error("Failed to add post:", result.error);

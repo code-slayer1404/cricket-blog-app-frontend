@@ -7,10 +7,10 @@ import { useAuth } from '@/hooks/auth';
 
 interface PostProps {
     post: PostReadDTO;
-    loadPosts: (num?: number) => void
+    refreshPosts: (num?: number) => void
 }
 
-export default function Post({ post, loadPosts }: PostProps) {
+export default function Post({ post, refreshPosts }: PostProps) {
 
     const mystyle = {
     }
@@ -25,9 +25,9 @@ export default function Post({ post, loadPosts }: PostProps) {
 
             const result = await deletePost(loggedUser.id, post.id);
             if (result.ok) {
-                const data = result.data;
-                console.log(data);
-                loadPosts();
+                // const data = result.data;
+                // console.log(data);
+                refreshPosts();
             }else{
                 console.log(result.error); 
             }
