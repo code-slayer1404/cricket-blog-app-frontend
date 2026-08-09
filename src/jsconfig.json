@@ -1,8 +1,0 @@
-// for my vscode suggestions
-{
-    "compilerOptions": {
-        "baseUrl": "./src",
-        "checkJs": true,
-        "jsx": "react-jsx"
-    }
-}

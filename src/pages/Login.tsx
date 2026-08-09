@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from "reactstrap";
-import { saveTokenAndUser } from "../auth/loginHelper";
-import { login } from "../services/UserServices";
-import PropTypes from "prop-types";
+import { login } from "@/services/UserServices";
 import { useNavigate } from "react-router-dom";
+import { JwtAuthResponse } from "@/types/dto/AuthDTO";
+import { useAuth } from "@/hooks/auth";
 
-export default function Login({ updateLoginStatus }) {
+export default function Login() {
 
     const navigate = useNavigate();
+    const {persistLogin} = useAuth();
 
     const initialState = {
         email: "",
@@ -23,7 +24,7 @@ export default function Login({ updateLoginStatus }) {
 
 
     // a common funtion to update all fields
-    function handleChange(event) {
+    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setFormData((prev) => {
             return {
                 ...prev,
@@ -32,28 +33,31 @@ export default function Login({ updateLoginStatus }) {
         });
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event: React.FormEvent) {
         event.preventDefault(); // to prevent refresh
         // submit logic here
-        login({ ...formData, username: formData.email })
-            .then(response => {
-                console.log(response);
-                saveTokenAndUser(response.data, () => {
-                    setFormData(initialState);
-                    updateLoginStatus();
-                    navigate("/user/dashboard");
-                });
-            })
-            .catch(e => {
-                console.error(e);
-                setMessage(() => {
-                    return {
-                        type: "alert-danger",
-                        content: "login failed! try with a different email or password"
-                    }
-                });
-            })
+        
+        const result = await login({ username: formData.email, password: formData.password }); //backend expects username not email
+        
+        if(result.ok){
+            
+            console.log(result.data);
+            const data = result.data as JwtAuthResponse
 
+            persistLogin(data) // synchronus
+            setFormData(initialState)
+            navigate("/user/dashboard")
+
+        }else{
+            console.error(result.error);
+            setMessage(() => {
+                return {
+                    type: "alert-danger",
+                    content: "login failed! try with a different email or password"
+                }
+            });
+        }
+        
     }
 
     // just for me to see 
@@ -99,7 +103,3 @@ export default function Login({ updateLoginStatus }) {
     )
 }
 
-
-Login.propTypes = {
-    updateLoginStatus: PropTypes.func
-}

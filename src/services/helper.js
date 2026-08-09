@@ -1,19 +1,23 @@
 import axios from "axios"
 
-// export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "http://localhost:8080";
 
 // export const BASE_URL = "http://blog-app-env.eba-jprayzxb.ap-south-1.elasticbeanstalk.com";
-export const BASE_URL = "https://cricket-blog-app-backend.onrender.com";
+// export const BASE_URL = "https://cricket-blog-app-backend.onrender.com";
 
 export const myAxios = axios.create({
     baseURL: BASE_URL
 })
 
 
+// const getHeaders = () => {
+//     const data =  localStorage.getItem("token")
+//     if (data != null)
+//         return JSON.parse(data).token;
+//     else return null;
+// }
 const getHeaders = () => {
-    if (localStorage.getItem("data") != null)
-        return JSON.parse(localStorage.getItem("data")).token;
-    else return null;
+    return localStorage.getItem("token")
 }
 
 export const myAxiosWithAuth = axios.create({

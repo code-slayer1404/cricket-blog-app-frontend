@@ -1,6 +1,11 @@
-import PropTypes from 'prop-types';
-function Pagination({ currentPage, totalPages, onPageChange }) {
-    const pageNumbers = [];
+interface PaginationProps{
+    currentPage : number;
+    totalPages : number;
+    onPageChange : (num:number)=>void;
+}
+
+function Pagination({ currentPage, totalPages, onPageChange }:PaginationProps) {
+    const pageNumbers : JSX.Element[] = [];
 
     for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(
@@ -36,9 +41,3 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
 }
 
 export default Pagination;
-
-Pagination.propTypes = {
-    currentPage: PropTypes.number.isRequired,
-    totalPages: PropTypes.number.isRequired,
-    onPageChange: PropTypes.func.isRequired
-}

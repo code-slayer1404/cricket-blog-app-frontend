@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { addComment, getCommentsByPost } from '../services/CommentService';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { addComment, getCommentsByPost } from '@/services/CommentService';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-import Comment from './Comment';
-import { isLogged } from '../auth/loginHelper';
+import Comment from '@/components/Comment';
+import { useAuth } from '../hooks/auth';
+import { CommentReadDTO } from '../types/dto/CommentDTO';
 
-const CommentBox = ({ postId }) => {
+export default function CommentBox({ postId }:{postId:number}){
 
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
+    const {loginStatus} = useAuth();
+    const [comments, setComments] = useState<CommentReadDTO[]>([]);
+    const [newComment, setNewComment] = useState<string>('');
 
 
-    function loadComments(arg) {
+    function loadComments(arg:number) {
         getCommentsByPost(arg, 1)
             .then(data => {
                 setComments(data.content);
@@ -27,11 +28,11 @@ const CommentBox = ({ postId }) => {
     }, []);
 
 
-    const handleCommentChange = (e) => {
+    const handleCommentChange = (e : ChangeEvent<HTMLInputElement>) => {
         setNewComment(e.target.value);
     }
 
-    const handleCommentSubmit = (e) => {
+    const handleCommentSubmit = (e : FormEvent) => {
         e.preventDefault();
 
         addComment(Number(postId), { content: newComment })
@@ -52,7 +53,7 @@ const CommentBox = ({ postId }) => {
                 <Comment key={comment.id} comment={comment} loadComments={loadComments} />
             ))}
 
-            {isLogged() && (
+            {loginStatus && (
                 <Form onSubmit={handleCommentSubmit}>
                     <FormGroup>
                         <Label for="newComment">Add a comment:</Label>
@@ -64,11 +65,3 @@ const CommentBox = ({ postId }) => {
         </div>
     );
 };
-
-CommentBox.propTypes = {
-    postId: PropTypes.string,
-};
-
-export default CommentBox;
-
-

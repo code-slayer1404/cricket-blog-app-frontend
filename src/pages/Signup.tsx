@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from "reactstrap";
-import {signup} from "../services/UserServices";
+import { signup } from "../services/UserServices";
 
 export default function Signup() {
     const initialState = {
@@ -22,7 +22,7 @@ export default function Signup() {
 
 
     // a common funtion to update all fields
-    function handleChange(event) {
+    function handleChange(event: ChangeEvent<HTMLInputElement>) {
         setFormData((prev) => {
             return {
                 ...prev,
@@ -32,36 +32,29 @@ export default function Signup() {
         });
     }
 
-
-    function handleSubmit(event) {
+    async function handleSubmit(event: FormEvent) {
         event.preventDefault(); // to prevent refresh
 
-        //may add validation logic here later
-
-        // submit logic here⬇️
-
-        // because my api expects username as the field name instead of email
-        signup({ ...formData, username: formData.email })
-            .then(response => {
-                console.log('response is :');
-                console.log(response);
-                console.log(response.data);
-                setMessage(() => {
-                    return {
-                        type: "alert-success",
-                        content: "registered successfully!"
-                    }
-                });
-            })
-            .catch(error => {
-                console.error(error, "try with a different email");
-                setMessage(() => {
-                    return {
-                        type: "alert-danger",
-                        content: "registeration failed! try with a different email"
-                    }
-                });
+        console.log(formData);
+        const result = await signup({username: formData.email, password:formData.password});
+        if (result.ok) {
+            setMessage(() => {
+                return {
+                    type: "alert-success",
+                    content: `${result.data?.username} registered successfully!`
+                }
             });
+
+        } else {
+
+            console.error(result.error, "try with a different email");
+            setMessage(() => {
+                return {
+                    type: "alert-danger",
+                    content: "registeration failed! try with a different email"
+                }
+            });
+        }
     }
 
     return (
@@ -69,7 +62,7 @@ export default function Signup() {
             <Container style={{ marginTop: "150px" }}>
                 <Row>
                     <Col md={{ size: 6, offset: 3 }}>
-                        <Form onSubmit={handleSubmit} onChange={() => { setMessage({type:"",content:""}) }}>
+                        <Form onSubmit={handleSubmit} onChange={() => { setMessage({ type: "", content: "" }) }}>
                             <Card className="pb-3">
                                 <CardHeader>
                                     <p className={`alert ${message.type}`}>{message.content}</p>

@@ -1,7 +1,9 @@
 import { Outlet } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useAuth } from "../../hooks/auth";
 
-export default function PrivatePage({loginStatus}){
+export default function PrivatePage(){
+    const {loginStatus} = useAuth();
     return(
         <>
             <div style={{marginTop:"80px"}}>

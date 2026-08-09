@@ -1,16 +1,34 @@
-import { useState } from "react";
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from "reactstrap";
-import { addPost } from "../../services/PostService";
-import PropTypes from "prop-types"
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from 'reactstrap';
+import { getPost, updatePost } from '@/services/PostService';
+import { useAuth } from '../../hooks/auth';
 
-export default function AddPost({ loadPosts }) {
 
-    const [postData, setPostData] = useState({
+export default function UpdatePost() {
+    const { id } = useParams();
+    const initialFormState = {
         title: "",
         content: ""
-    });
+    }
+    const {loggedUser} = useAuth();
+    const navigate = useNavigate();
+    const [postData, setPostData] = useState(initialFormState);
 
-    function handleChange(event) {
+    useEffect(() => {
+        // Fetch the post with the given ID and update postData
+        getPost(Number(id)).then(
+            data => {
+                console.log(data);
+                setPostData({
+                    title: data.title,
+                    content: data.content,
+                })
+            }
+        );
+    }, [id]);
+
+    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setPostData(
             (prev) => {
                 return {
@@ -21,34 +39,17 @@ export default function AddPost({ loadPosts }) {
         )
     }
 
-    // function handleSubmit(event) {
-    //     event.preventDefault();
-
-    //     addPost(postData).then(response => {
-    //         console.log(response);
-    //         console.log(response.data);
-    //         setPostData({ title: "", content: "" });
-    //         loadPosts();
-    //     });
-    // }
-
-    async function handleSubmit(event) {
+    function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
-        try {
-            const response = await addPost(postData);
+        if(!loggedUser){
+            throw new Error("could not update! Not logged in!")
+        }
+        updatePost(loggedUser.id,Number(id), postData).then(response => {
             console.log(response);
             console.log(response.data);
-
-            setPostData({ title: "", content: "" });
-            loadPosts(); // Reload posts after successful submission
-            
-        } catch (error) {
-            // Handle errors here, for example:
-            console.error("Failed to add post:", error);
-            // Update state to display error message to the user
-        }
+            navigate(`/user/dashboard`);
+        });
     }
-
 
     return (
         <>
@@ -58,7 +59,7 @@ export default function AddPost({ loadPosts }) {
                         <Form onSubmit={handleSubmit}>
                             <Card>
                                 <CardHeader>
-                                    Add Post
+                                    Update Post
                                 </CardHeader>
                                 <CardBody>
 
@@ -76,8 +77,9 @@ export default function AddPost({ loadPosts }) {
                                 </CardBody>
                                 <CardFooter>
                                     <div className="text-center">
-                                        <Button color="success" className="me-2">Post</Button>
-                                        <Button>Reset</Button>
+                                        <Button color='primary' className="me-2">Update</Button>
+                                        <Button color='danger' className='me-2' onClick={()=>{setPostData(initialFormState)}}>Reset</Button>
+                                        <Button color='secondary' onClick={() => navigate(-1)}>Go Back</Button>
                                     </div>
                                 </CardFooter>
                             </Card>
@@ -90,6 +92,3 @@ export default function AddPost({ loadPosts }) {
     )
 }
 
-AddPost.propTypes = {
-    loadPosts: PropTypes.func
-}

@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext", // keep ESNext for bundlers like Vite
+    "moduleResolution": "bundler", // bundler mode avoids Node16 import extension headaches
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "allowJs": true, // optional: if you still have .js files
+    "checkJs": true, // set true if you want JS type-checking
+    "paths": {
+      "@/*" : ["./src/*"]
+    }
+  },
+  "include": [
+    "src",
+    "vite.config.ts"
+, "declarations.d.ts"  ]
+}

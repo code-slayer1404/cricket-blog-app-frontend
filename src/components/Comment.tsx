@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import PropTypes from 'prop-types';
 import { deleteComment, updateComment } from "../services/CommentService";
 import { Button, Card, CardBody, CardFooter, Input } from "reactstrap";
-import { getUserDetails, isLogged } from "../auth/loginHelper";
+import { useAuth } from "../hooks/auth";
+import { CommentReadDTO } from "../types/dto/CommentDTO";
+interface CommentProps{
+    comment : CommentReadDTO;
+    loadComments : (arg:number)=>void;
+}
 
-export default function Comment({ comment, loadComments }) {
+export default function Comment({ comment, loadComments } : CommentProps) {
+    const {loginStatus, loggedUser} = useAuth()
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.content);
 
-    const handleEditChange = (e) => {
+    const handleEditChange = (e : ChangeEvent<HTMLInputElement>) => {
         setEditedComment(e.target.value);
     }
 
-    const handleEditSubmit = (e) => {
+    const handleEditSubmit = (e : FormEvent) => {
         e.preventDefault();
         updateComment(comment.post.id, comment.id, { content: editedComment })
             .then((data) => {
@@ -27,7 +33,7 @@ export default function Comment({ comment, loadComments }) {
 
 
 
-    function handleDelete(commentId) {
+    function handleDelete(commentId:number) {
         console.log(commentId);
         deleteComment(comment.post.id, commentId)
             .then((data) => {
@@ -42,7 +48,10 @@ export default function Comment({ comment, loadComments }) {
     }
 
     function renderUpdateAndDeleteButtons() {
-        if (isLogged() && comment.user.id == getUserDetails().id) {
+        if(!loggedUser){
+            throw new Error("cannot update comment! no user logged in!")
+        }
+        if (loginStatus && comment.user.id == loggedUser.id) {
             return (
                 <CardFooter className="text-center">
                     <Button color="primary" className="me-3" onClick={() => setIsEditing(true)}>Edit</Button>
@@ -52,10 +61,7 @@ export default function Comment({ comment, loadComments }) {
         }
     }
 
-
     const myStyle = { marginRight: "10px" };
-
-
 
     return (
         <Card className="mb-3">
@@ -89,20 +95,4 @@ export default function Comment({ comment, loadComments }) {
         </Card>
     );
 
-}
-
-Comment.propTypes = {
-    comment: PropTypes.shape({
-        id: PropTypes.number,
-        user: PropTypes.shape({
-            name: PropTypes.string,
-            id: PropTypes.number
-        }),
-        post: PropTypes.shape({
-            id: PropTypes.number
-        }),
-        content: PropTypes.string,
-        date: PropTypes.string
-    }),
-    loadComments: PropTypes.func
 }

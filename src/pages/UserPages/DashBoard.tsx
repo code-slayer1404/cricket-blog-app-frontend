@@ -1,27 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
-import { getUserPosts } from "../../services/PostService";
-import Post from "../../components/Post";
-import AddPost from "./AddPost";
-import Pagination from "../../components/Pagination";
+import { getUserPosts } from "@/services/PostService";
+import Post from "@/components/Post";
+import AddPost from "@/pages/UserPages/AddPost";
+import Pagination from "@/components/Pagination";
+import { PostReadDTO } from "@/types/dto/PostDTO";
 
 
 export default function DashBoard() {
 
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<PostReadDTO[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
 
-    function loadPosts(num) {
+    function loadPosts(num?:number) {
 
-        getUserPosts(num).then(r => {
-            console.log(r.data);
-            setPosts(r.data.content.map((post) => { return <Post key={post.id} post={post} loadPosts={loadPosts}></Post> }));
+        getUserPosts(num).then(data => {
+            console.log(data);
+            setPosts(data.content);
             console.log(posts);
-            setCurrentPage(r.data.currentPage);
-            setTotalPages(r.data.totalPages);
+            setCurrentPage(data.currentPage);
+            setTotalPages(data.totalPages);
         }).catch(e=>{
             console.error("error loading posts",e);
         });
@@ -31,7 +32,7 @@ export default function DashBoard() {
         loadPosts(currentPage);
     }, []);
 
-    function onPageChange(num) {
+    function onPageChange(num:number) {
         loadPosts(num);
     }
 
@@ -44,7 +45,7 @@ export default function DashBoard() {
                     <Col md={{ size: 8, offset: 2 }} className="mt-5">
 
                         <div className="my-5">
-                            {posts}
+                            {posts.map((post) => { return <Post key={post.id} post={post} loadPosts={loadPosts}></Post> })}
                         </div>
                         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange}></Pagination>
                     </Col>

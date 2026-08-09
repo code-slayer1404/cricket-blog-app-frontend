@@ -1,33 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from 'reactstrap';
-import { getPost, updatePost } from '../../services/PostService';
-import { getUserDetails } from '../../auth/loginHelper';
+import { useState } from "react";
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row } from "reactstrap";
+import { addPost } from "@/services/PostService";
+import { PostWriteDTO } from "@/types/dto/PostDTO";
 
+interface AddPostsProps{
+    loadPosts : (num?:number) => void
+}
 
-export default function UpdatePost() {
-    const { id } = useParams();
-    const initialFormState = {
+export default function AddPost({ loadPosts }:AddPostsProps) {
+
+    const [postData, setPostData] = useState<PostWriteDTO>({
         title: "",
         content: ""
-    }
-    const navigate = useNavigate();
-    const [postData, setPostData] = useState(initialFormState);
+    });
 
-    useEffect(() => {
-        // Fetch the post with the given ID and update postData
-        getPost(id).then(
-            r => {
-                console.log(r);
-                setPostData({
-                    title: r.data.title,
-                    content: r.data.content,
-                })
-            }
-        );
-    }, [id]);
-
-    function handleChange(event) {
+    function handleChange(event : React.ChangeEvent<HTMLInputElement>) {
         setPostData(
             (prev) => {
                 return {
@@ -38,15 +25,23 @@ export default function UpdatePost() {
         )
     }
 
-    function handleSubmit(event) {
-        event.preventDefault();
 
-        updatePost(getUserDetails().id,id, postData).then(response => {
-            console.log(response);
-            console.log(response.data);
-            navigate(`/user/dashboard`);
-        });
+    async function handleSubmit(event:React.FormEvent) {
+        event.preventDefault();
+        try {
+            const response = await addPost(postData);
+            console.log(response.status,response.statusText);
+            
+            setPostData({ title: "", content: "" });
+            loadPosts(); // Reload posts after successful submission
+            
+        } catch (error) {
+            // Handle errors here, for example:
+            console.error("Failed to add post:", error);
+            // Update state to display error message to the user
+        }
     }
+
 
     return (
         <>
@@ -56,7 +51,7 @@ export default function UpdatePost() {
                         <Form onSubmit={handleSubmit}>
                             <Card>
                                 <CardHeader>
-                                    Update Post
+                                    Add Post
                                 </CardHeader>
                                 <CardBody>
 
@@ -74,9 +69,8 @@ export default function UpdatePost() {
                                 </CardBody>
                                 <CardFooter>
                                     <div className="text-center">
-                                        <Button color='primary' className="me-2">Update</Button>
-                                        <Button color='danger' className='me-2' onClick={()=>{setPostData(initialFormState)}}>Reset</Button>
-                                        <Button color='secondary' onClick={() => navigate(-1)}>Go Back</Button>
+                                        <Button color="success" className="me-2">Post</Button>
+                                        <Button>Reset</Button>
                                     </div>
                                 </CardFooter>
                             </Card>
@@ -88,4 +82,3 @@ export default function UpdatePost() {
         </>
     )
 }
-

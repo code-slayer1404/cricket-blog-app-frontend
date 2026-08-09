@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react"
-import { getAllPosts } from "../services/PostService";
-import Post from "../components/Post";
+import { getAllPosts } from "@/services/PostService";
+import Post from "@/components/Post";
 import { Col, Container, Row } from "reactstrap";
-import Pagination from "../components/Pagination";
+import Pagination from "@/components/Pagination";
+import { PostReadDTO } from "@/types/dto/PostDTO";
 
 export default function Home() {
-
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<PostReadDTO[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
 
     function loadPosts(num=1) {
-        getAllPosts(num).then(r => {
-            setPosts(r.data.content.map(post => {
-                return <Post key={post.id} post={post} loadPosts={loadPosts}></Post>
-            }));
-            setCurrentPage(r.data.currentPage);
-            setTotalPages(r.data.totalPages);
+        getAllPosts(num).then(data => {
+            setPosts(data.content);
+            setCurrentPage(data.currentPage);
+            setTotalPages(data.totalPages);
         })
     }
 
@@ -27,7 +25,7 @@ export default function Home() {
     }, []);
 
 
-    function onPageChange(num) {
+    function onPageChange(num:number) {
         loadPosts(num);
     }
 
@@ -38,7 +36,7 @@ export default function Home() {
                 <Row>
                     <Col md={{ size: 8, offset: 2 }}>
                         <div className="my-5">
-                            {posts}
+                            {posts.map(post=><Post key={post.id} post={post} loadPosts={loadPosts}></Post>)}
                         </div>
                         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange}></Pagination>
                     </Col>

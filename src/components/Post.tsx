@@ -1,18 +1,28 @@
-import PropTypes from 'prop-types'
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText } from 'reactstrap'
-import { getUserDetails, isLogged } from '../auth/loginHelper'
-import { deletePost, myDateFormatter } from '../services/PostService';
+import { deletePost, myDateFormatter } from '@/services/PostService';
 import { Link } from 'react-router-dom';
-export default function Post({ post, loadPosts }) {
+import { PostReadDTO } from '@/types/dto/PostDTO';
+import { useAuth } from '../hooks/auth';
 
+
+interface PostProps{
+    post : PostReadDTO;
+    loadPosts : (num?:number) => void
+}
+
+export default function Post({ post, loadPosts } : PostProps) {
 
     const mystyle = {
     }
+    const {loggedUser,loginStatus} = useAuth()
 
-    function onDelete(event) {
+    function onDelete(event : React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault();
         if (window.confirm('Are you sure you want to delete this post?')) {
-            deletePost(getUserDetails().id,post.id).then(r => {
+            if(!loggedUser){
+                throw new Error("could not delete. no user logged in")
+            }
+            deletePost(loggedUser.id,post.id).then(r => {
                 console.log(r.data);
                 loadPosts();
             });
@@ -21,7 +31,7 @@ export default function Post({ post, loadPosts }) {
 
 
     function renderUpdateAndDeleteButtons() {
-        if (isLogged() && post.user.id == getUserDetails().id) {
+        if (loginStatus && post.user.id == loggedUser!.id) {
             return (
                 <>
                     <Link to={`/user/update-post/${post.id}`}>
@@ -60,18 +70,4 @@ export default function Post({ post, loadPosts }) {
             </Card>
         </>
     )
-}
-
-Post.propTypes = {
-    post: PropTypes.shape({
-        id: PropTypes.number,
-        title: PropTypes.string,
-        content: PropTypes.string,
-        date: PropTypes.string,
-        user: PropTypes.shape({
-            id: PropTypes.number,
-            name: PropTypes.string
-        })
-    }),
-    loadPosts: PropTypes.func
 }
